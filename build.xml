@@ -1,0 +1,11 @@
+<project name="common" default="ConfigureBuildEnvironment">
+	<property name="component.type" value="common" />
+	<import file="./common.xml" />
+	<target name="ConfigureBuildEnvironment" depends="GetDependencies">
+		<echo>Now configuring the build environment</echo>
+		<echo>The ANT HOME folder is ${ant.home}</echo>
+		<copy todir="${ant.home}/lib">
+			<fileset refid="rslvd.build.set" />
+		</copy>
+	</target>
+</project>

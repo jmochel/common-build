@@ -1,0 +1,181 @@
+<!--
+ *
+ *	Copyright (c) 2005, 2006, 2007 jmochel
+ *	All rights reserved.
+ *
+ * 	Redistribution and use in source and binary forms, with or without modification,
+ *  are permitted provided that the following conditions are met:
+ *
+ * 	Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *
+ *	Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *
+ * 	Neither the name of the <ORGANIZATION> nor the names of its contributors
+ *  may be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ * 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ *  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ *  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ *  OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="commonbuild-j2ee_ejb" default="Build">
+
+	<property name="component.type" value="j2ee_ejb3"/>
+
+	<import file="./common.xml"/>
+
+	<!--
+
+			This component level build file contains the targets
+			necessary to build the given types of components inside of
+			the common build system.
+
+			#############################################
+
+			Component Directory Structure
+
+			#############################################
+
+			/project/components/component1
+			/project/components/component1/build.xml
+
+			/project/components/component1/src
+
+			/project/components/component1/src/main
+			/project/components/component1/src/main/java
+			/project/components/component1/src/main/conf
+			/project/components/component1/src/test
+			/project/components/component1/src/test/java
+			/project/components/component1/src/test/conf
+
+			/project/components/component1/target/classes
+			/project/components/component1/target/test-classes
+			/project/components/component1/target/distrib
+			/project/components/component1/target/reports
+			/project/components/component1/target/reports/testing
+
+	-->
+
+	<!--
+		====================================
+		Validation and Configuration Targets
+		====================================
+	-->
+
+
+	<!--
+		Prep is the common preparation target.
+	 -->
+
+
+	<target name="Prep.j2ee_ejb3">
+		<mkdir dir="${comp.target.dist.ejb.dir}"/>
+		<mkdir dir="${comp.target.dist.jar.dir}"/>
+	</target>
+
+
+	<!--
+		====================================
+		Generate Code and Resources
+		====================================
+	-->
+
+	<!--
+		Gen is the common source code generation target.
+
+		Component 'instance specific' code generation occurs in the Comp.Gen target
+
+		The Comp.Gen target has a default implementation which can be overridden in the component's build.xml file
+	 -->
+
+	<target name="Gen.j2ee_ejb3">
+		<copy todir="${comp.gen.src.main.conf.dir}" description="Copying conf files over to generated sources folder">
+			<fileset dir="${comp.src.main.conf.dir}" includes="**/*"/>
+		</copy>
+		<copy todir="${comp.gen.src.test.conf.dir}" failonerror="false" description="Copying test conf files over to generated sources folder" >
+			<fileset dir="${comp.src.test.conf.dir}" includes="**/*"/>
+		</copy>
+	</target>
+
+	<!--
+		====================================
+					Build
+		====================================
+	-->
+
+	<!--
+		Build is the common build target.
+	 -->
+
+	<target name="Build.j2ee_ejb3" depends="Build.Core.j2ee_ejb3,Build.Test.j2ee_ejb3"/>
+
+	<target name="Build.Core.j2ee_ejb3" depends="Compile.Core.Java">
+	      <copy todir="${comp.target.main.classes.dir}" description="Copying conf files over to target classes folder">
+	            <fileset dir="${comp.gen.src.main.conf.dir}" includes="**/*"/>
+	        </copy>
+	</target>
+
+	<target name="Build.Test.j2ee_ejb3" depends="Compile.Test.Java" if="comp.src.test.unit.java.dir.present">
+	      <copy todir="${comp.target.test.classes.dir}" failonerror="false" description="Copying conf files over to target classes folder">
+	            <fileset dir="${comp.gen.src.test.conf.dir}" includes="**/*"/>
+          </copy>
+	</target>
+
+
+	<!--
+		====================================
+			Component Package and Test
+		====================================
+	-->
+
+	<!--
+		Packages an EJB JAR using the ANT EJBJAR Task
+	-->
+
+	<target name="Pkg.j2ee_ejb3" depends="Pkg.Core.j2ee_ejb3, Pkg.Test.j2ee_ejb3"/>
+
+	<target name="Pkg.Core.j2ee_ejb3">
+
+		<pathconvert property="resolved.dependencies.as.classpath" pathsep=" ">
+			<path refid="rslvd.deploy.path"/>
+			<flattenmapper/>
+		</pathconvert>
+
+		<jar
+	    	destfile="${comp.target.dist.ejb.dir}/${ivy.module}-${component.version}.jar"
+	    	basedir="${comp.target.main.classes.dir}"
+			duplicate="preserve"
+		>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Class-Path" value="${resolved.dependencies.as.classpath}" />
+			</manifest>
+		</jar>
+
+
+	</target>
+
+	<target name="Pkg.Test.j2ee_ejb3">
+		<jar basedir="${comp.target.test.classes.dir}" jarfile="${comp.target.dist.jar.dir}/${ivy.module}-test-${component.version}.jar"/>
+	</target>
+
+
+	<!--
+		Verify is the common verification target.
+	 -->
+
+	<target name="Verify.ejb"/>
+
+</project>

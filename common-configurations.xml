@@ -1,0 +1,69 @@
+<configurations>
+	<!--
+		Build dependencies are those needed only for the execution of the
+		build (Preprocerssors , etc...)
+	-->
+	<conf name="build" description="Dependencies needed to build the code base"
+		visibility="public" />
+
+	<!--
+		Core dependencies are those needed (for compilation and running) by
+		anyone.
+	-->
+
+	<conf name="core" description="Core dependencies needed by all"
+		visibility="public" />
+
+	<!--
+		Provided dependencies are those that the container or normal runtime
+		system will be providing but for now, we need some jars to replace
+		them. API only jars may be in here as well as other container based
+		jars. Example: The J2EE API jars may be provided for SUN for
+		compilation but should not be deployed to JBOSS since JBOSS provides
+		its own versions.
+	-->
+
+	<conf name="provided"
+		description="Container or System provided dependencies needed at compile time (Typically provided by the environment for test and deployment time"
+		visibility="public" />
+	<!--
+		Compile dependencies are those that system needs to compile the
+		application/library Compile dependencies are the set of 'core' and
+		'provided' dependencies and any other the user designates. Example:
+		The user may have the commons-collection as a 'core' dependency, the
+		Java Persistence API as a 'provided' dependency and a sepcific
+		implementation of the JPA as needed for 'compile'.
+	-->
+	<conf name="compile" extends="core, provided" description="Compile Time dependencies"
+		visibility="public" />
+	<!--
+		Deploy dependencies are those runtime dependencies that the build
+		system needs to deploy with the application but are not needed for
+		testing or compile. Example: The HSQLDB (Database and JDBC Drivers)
+		jars may be used for testing but the application will need to deploy
+		the Microsoft and Oracle database drivers. So the 'test' dependency
+		would be HSQLDB and the 'deploy' dependency will be microsoft and
+		oracle jdbc drivers.
+	-->
+	<conf name="deploy" extends="core"
+		description="Deployment dependencies (does not include API and other packages provided by the container or deployment environment)"
+		visibility="public" />
+	<!--
+		Test dependencies are those runtime dependencies that the build system
+		needs to test the application but are not needed for compilation.
+		Example: The HSQLDB (Database and JDBC Drivers) jars may be used for
+		testing but the application will need to deploy the Microsoft and
+		Oracle database drivers. So the 'test' dependency would be HSQLDB and
+		the 'deploy' dependency will be microsoft and oracle jdbc drivers.
+	-->
+	<conf name="test" extends="core,stub"
+		description="Test Time dependencies (those dependencies needed in the running of tests"
+		visibility="public" />
+	<!--
+		Stub dependencies are those that build system needs to replace
+		container or other 'provided' dependencies when running tests. The
+		user may have mock classes for the java security API.
+	-->
+	<conf name="stub" description="Stub or Mock dependencies needed by test"
+		visibility="public" />
+</configurations>

@@ -1,0 +1,132 @@
+<!--
+ *
+ *	Copyright (c) 2005, 2006, 2007 jmochel
+ *	All rights reserved.
+ *
+ * 	Redistribution and use in source and binary forms, with or without modification,
+ *  are permitted provided that the following conditions are met:
+ *
+ * 	Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *
+ *	Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *
+ * 	Neither the name of the <ORGANIZATION> nor the names of its contributors
+ *  may be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ * 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ *  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ *  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ *  OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<!--
+	A Common Java lib is just that, simple compiled java code. No preprocessing, nothing.
+-->
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="commonbuild-java_lib" default="Build">
+
+	<!-- Sets the type that this XML file is designed for -->
+
+	<property name="component.type" value="java_lib" />
+
+	<import file="./common.xml"/>
+
+	<!--
+
+			This component level build file contains the targets
+			necessary to build java_lib components inside of
+			the common build system.
+
+
+			#############################################
+
+			Component Directory Structure
+
+			#############################################
+
+			/project/components/component1
+			/project/components/component1/build.xml
+
+			/project/components/component1/src
+
+			/project/components/component1/src/main
+			/project/components/component1/src/main/java
+			/project/components/component1/src/main/conf
+			/project/components/component1/src/test
+			/project/components/component1/src/test/java
+			/project/components/component1/src/test/conf
+
+			/project/components/component1/target/classes
+			/project/components/component1/target/test-classes
+			/project/components/component1/target/distrib
+			/project/components/component1/target/reports
+			/project/components/component1/target/reports/testing
+
+	-->
+
+
+	<!--
+		====================================
+		Validation and Configuration Targets
+		====================================
+	-->
+
+
+	<!--
+		Prep is the common preparation target.
+	 -->
+
+	<target name="Prep.java_lib">
+		<mkdir dir="${comp.target.dist.jar.dir}"/>
+	</target>
+
+	<!--
+		Gen is the source code generation target.
+	 -->
+
+	<target name="Gen.java_lib">
+	</target>
+
+	<!--
+		Build.java_lib is the common java_lib building target.
+	 -->
+
+	<target name="Build.java_lib" depends="Build.Core.java_lib, Build.Test.java_lib"/>
+
+	<target name="Build.Core.java_lib" depends="Compile.Core.Java">
+	</target>
+
+	<target name="Build.Test.java_lib" depends="Compile.Test.Java" if="comp.src.test.unit.java.dir.present">
+	</target>
+
+	<!--
+		Packaging targets for java_libs (Core and Testing Code)
+	-->
+
+	<target name="Pkg.java_lib" depends="Pkg.Core.java_lib, Pkg.Test.java_lib"/>
+
+	<target name="Pkg.Core.java_lib">
+		<jar basedir="${comp.target.main.classes.dir}" jarfile="${comp.target.dist.jar.dir}/${ivy.module}-${component.version}.jar"/>
+	</target>
+
+	<target name="Pkg.Test.java_lib">
+		<jar basedir="${comp.target.test.classes.dir}" jarfile="${comp.target.dist.jar.dir}/${ivy.module}-test-unit-${component.version}.jar"/>
+	</target>
+
+	<!--
+		Verify is the verification target.
+	 -->
+
+	<target name="Verify.java_lib"/>
+
+</project>

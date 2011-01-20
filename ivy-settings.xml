@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<ivysettings>
+	<properties environment="env"/>
+	<properties file="${env.HOME}/common-build.repository.properties" />
+	
+	<!-- Local Repo Properties -->	
+	<property name="ivy.local.default.root"             value="${ivy.default.ivy.user.dir}/local" override="false"/>
+  	<property name="ivy.local.default.ivy.pattern"      value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+  	<property name="ivy.local.default.artifact.pattern" value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+
+	<!-- Shared Repo Properties -->
+	<property name="ivy.shared.default.root"             value="${ivy.default.ivy.user.dir}/shared" override="false"/>
+  	<property name="ivy.shared.default.ivy.pattern"      value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+  	<property name="ivy.shared.default.artifact.pattern" value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+	
+	<settings defaultResolver="default" />
+
+ 	<caches default="default">
+        <cache name="default" basedir="${ivy.default.ivy.user.dir}/cache"/>
+  	 </caches> 
+  
+	<resolvers>
+
+		<ibiblio name="enterprise" m2compatible="true" root="${common-build.enterprise.repository}/content/groups/public" pattern="[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+		
+		<url name="enterprise-releases" m2compatible="true">
+		  	<ivy pattern="${common-build.enterprise.repository}/content/repositories/releases/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+  			<artifact  pattern="${common-build.enterprise.repository}/content/repositories/releases/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+		</url>
+		
+		<ibiblio name="enterprise-snapshots" m2compatible="true" root="${common-build.enterprise.repository}/content/repositories/snapshots" pattern="[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+		
+	  	<filesystem name="local">
+    		<ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
+      		<artifact pattern="${ivy.local.default.root}/${ivy.local.default.artifact.pattern}" />
+    	</filesystem>
+
+	    <filesystem name="shared">
+    	  	<ivy pattern="${ivy.shared.default.root}/${ivy.shared.default.ivy.pattern}" />
+      		<artifact pattern="${ivy.shared.default.root}/${ivy.shared.default.artifact.pattern}" />
+    	</filesystem>
+
+    	<chain name="public" dual="true">
+			<resolver ref="enterprise-releases"/>
+			<resolver ref="enterprise-snapshots"/>
+			<resolver ref="enterprise"/>    		
+    	</chain>
+
+    	<chain name="main" dual="true">
+      		<resolver ref="shared"/>
+      		<resolver ref="public"/>
+    	</chain>
+    
+	    <chain name="default" returnFirst="true">
+    	  	<resolver ref="local"/>
+      		<resolver ref="main"/>
+    	</chain>
+	</resolvers>
+	
+</ivysettings>

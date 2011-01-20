@@ -1,0 +1,158 @@
+<!--
+ *
+ *	Copyright (c) 2005, 2006, 2007 jmochel
+ *	All rights reserved.
+ *
+ * 	Redistribution and use in source and binary forms, with or without modification,
+ *  are permitted provided that the following conditions are met:
+ *
+ * 	Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *
+ *	Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *
+ * 	Neither the name of the <ORGANIZATION> nor the names of its contributors
+ *  may be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ * 	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ *  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ *  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ *  OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="commonbuild-j2ee_war" default="Build">
+
+	<!-- Sets the type that this XML file is designed for -->
+
+	<property name="component.type" value="j2ee_war" />
+
+	<import file="./common.xml"/>
+
+	<!--
+
+			This component level build file contains the targets
+			necessary to build the given types of components inside of
+			the common build system.
+
+			#############################################
+
+			Component Directory Structure
+
+			#############################################
+
+			/project/components/component1
+			/project/components/component1/build.xml
+
+			/project/components/component1/src
+
+			/project/components/component1/src/main
+			/project/components/component1/src/main/java
+			/project/components/component1/src/main/conf
+			/project/components/component1/src/test
+			/project/components/component1/src/test/java
+			/project/components/component1/src/test/conf
+
+			/project/components/component1/target/classes
+			/project/components/component1/target/test-classes
+			/project/components/component1/target/distrib
+			/project/components/component1/target/reports
+			/project/components/component1/target/reports/testing
+
+	-->
+
+
+	<!--
+		====================================
+		Validation and Configuration Targets
+		====================================
+	-->
+
+
+	<!--
+		Prep is the common preparation target.
+	 -->
+
+
+	<target name="Prep.j2ee_war">
+		<mkdir dir="${comp.target.dist.war.dir}"/>
+		<mkdir dir="${comp.target.dist.jar.dir}"/>
+	</target>
+
+
+	<!--
+		====================================
+		Generate Code and Resources
+		====================================
+	-->
+
+	<!--
+		Gen is the common source code generation target.
+	 -->
+
+	<target name="Gen.j2ee_war">
+		<filter token="COMPONENT.VERSION" value="${component.version}"/>
+		<copy todir="${comp.gen.src.main.conf.dir}" filtering="true" >
+			<fileset dir="${comp.src.main.conf.dir}" includes="web.xml"/>
+		</copy>
+	</target>
+
+
+	<!--
+		====================================
+					Build
+		====================================
+	-->
+
+	<target name="Build.j2ee_war"/>
+
+	<!--
+		====================================
+			Component Package and Test
+		====================================
+	-->
+
+	<!--
+		Pkg is the common packaging target.
+	 -->
+
+
+	<!--
+		Packages an J2EE WAR using the ANT WAR Task
+	-->
+
+	<target name="Pkg.j2ee_war" depends="Pkg.Core.j2ee_war, Pkg.Test.j2ee_war"/>
+
+	<target name="Pkg.Core.j2ee_war">
+	    <war
+	    	destfile="${comp.target.dist.dir}/wars/${ivy.module}-${component.version}.war"
+	    	webxml="${comp.gen.src.main.conf.dir}/web.xml"
+	    	>
+	    	<classes dir="${comp.target.main.classes.dir}"/>
+	    	<fileset dir="${comp.src.main.conf.dir}" includes="**/*" excludes="web.xml"/>
+	    	<lib dir="${comp.lib.dir}/deploy"/>
+	    	<lib dir="${comp.lib.dir}/core"/>
+		</war>
+	</target>
+
+	<target name="Pkg.Test.j2ee_war">
+		<jar basedir="${comp.target.test.classes.dir}" jarfile="${comp.target.dist.jar.dir}/${ivy.module}-test-${component.version}.jar"/>
+	</target>
+
+	<!--
+		Verify is the common verification target.
+	 -->
+
+	<target name="Verify.war"/>
+
+
+</project>
