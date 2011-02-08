@@ -222,6 +222,8 @@
 	<dirname property = "commonbuild.root.dir" file = "${ant.file.commonbuild}"/>
 
 	<property environment="env"></property> 
+	<property name="env.HOME" value="${env.USERPROFILE}"/>
+	
 	<echo message="Pulling the common build repository location from ${env.HOME}/common-build.repository.properties" /> 
 	<property file="${env.HOME}/common-build.repository.properties" />
 	
