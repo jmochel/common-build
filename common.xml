@@ -254,7 +254,7 @@
 	<target name="DownloadIvy" unless="ivy.installed"> 
 	   	<mkdir dir="${ivy.install.jar.dir}"/> 
 		<echo message="Downloading Ivy Tasks..."/> 
-    	<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.install.jar.file}" usetimestamp="true"/>
+    	<get src="${common-build.enterprise.repository}/service/local/repositories/releasesy/prg/apache/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.install.jar.file}" usetimestamp="true"/>
 	</target> 
 	
 	<target name="DownloadTestNG" unless="testng.installed"> 
