@@ -227,6 +227,9 @@
 	<echo message="Pulling the common build repository location from ${env.HOME}/common-build.repository.properties" /> 
 	<property file="${env.HOME}/common-build.repository.properties" />
 	
+	<!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
+	<property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"></property>
+	
 	<property name="ivy.install.version" value="2.2.0" /> 
 	<property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
 	<property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
