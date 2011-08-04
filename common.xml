@@ -545,6 +545,7 @@
 
     	<ivy:settings file="${commonbuild.root.dir}/ivy-settings.xml">
     		<ivy:credentials host="192.168.168.7"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
+				<ivy:credentials host="artifactrepo"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
 		</ivy:settings>
 
 		<ivy:resolve  haltonfailure="true" />
