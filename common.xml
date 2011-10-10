@@ -675,7 +675,7 @@
 
 	<target name="Compile.Core.Java" >
 
-		<javac destdir="${comp.target.main.classes.dir}" debug="true" compiler="javac1.5" >
+		<javac destdir="${comp.target.main.classes.dir}" debug="true" target="1.5" >
 			<src path="${comp.src.main.java.dir}"/>
 			<src path="${comp.gen.src.main.java.dir}"/>
 			<classpath refid="resolved.build.and.compiled.path"/>
@@ -697,7 +697,7 @@
 	</target>
 
 	<target name="Compile.Test.Java" >
-		<javac destdir="${comp.target.test.classes.dir}" debug="true" compiler="javac1.5">
+		<javac destdir="${comp.target.test.classes.dir}" debug="true" target="1.5">
 			<src path="${comp.src.test.java.dir}"/>
 			<classpath refid="resolved.build.and.testable.path"/>
 		</javac>
