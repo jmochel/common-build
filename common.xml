@@ -32,272 +32,272 @@
 
 <project name="commonbuild" xmlns:ivy="antlib:org.apache.ivy.ant" default="Build">
 
-    <!--
-            #############################################
+	<!--
+			#############################################
 
-            What we are automating here:
+			What we are automating here:
 
-            Code Generation
-            Configuration Management
-            Software Bui
-            Software Integration
-            Regression Testing
-            Documentation
-            Software Release
-            Software Deployment
-            Web Page Generation
-            Web Deployment
+			Code Generation
+			Configuration Management
+			Software Bui
+			Software Integration
+			Regression Testing
+			Documentation
+			Software Release
+			Software Deployment
+			Web Page Generation
+			Web Deployment
 
-            What we are not automating:
+			What we are not automating:
 
-            Feasibility STudies/Evals
-            Analysis
-            Requirements
-            Use Cases
-            Code Design
-            Architecture
-            Coding
+			Feasibility STudies/Evals
+			Analysis
+			Requirements
+			Use Cases
+			Code Design
+			Architecture
+			Coding
 
-            #############################################
+			#############################################
 
 
-            #############################################
+			#############################################
 
-            The Intentions of this build system are
-            to provide a system build that is:
+			The Intentions of this build system are
+			to provide a system build that is:
 
-            #############################################
+			#############################################
 
-                    Complete
-                    Repeatable
-                    Informative
-                    Schedulable
-                    Portable
+					Complete
+					Repeatable
+					Informative
+					Schedulable
+					Portable
 
 
-            #############################################
+			#############################################
 
-            Directory Structure
+			Directory Structure
 
-            #############################################
+			#############################################
 
-            /common-build 	// Common Folder at the top level
+			/common-build 	// Common Folder at the top level
 
-            /project
+			/project
 
-            /project/common-build 	// Common Build Folder at the top level
+			/project/common-build 	// Common Build Folder at the top level
 
-            /project/root 			// Top Level 'build all' project
+			/project/root 			// Top Level 'build all' project
 
-            /project/components
-            /project/components/component1
-            /project/components/component1/build.xml
+			/project/components
+			/project/components/component1
+			/project/components/component1/build.xml
 
-            /project/components/component1/src
+			/project/components/component1/src
 
-            /project/components/component1/src/main
-            /project/components/component1/src/main/java
-            /project/components/component1/src/main/conf
-            /project/components/component1/src/test
-            /project/components/component1/src/test/java
-            /project/components/component1/src/test/conf
+			/project/components/component1/src/main
+			/project/components/component1/src/main/java
+			/project/components/component1/src/main/conf
+			/project/components/component1/src/test
+			/project/components/component1/src/test/java
+			/project/components/component1/src/test/conf
 
-            /project/components/component1/gen-src
-            /project/components/component1/gen-src/main
-            /project/components/component1/gen-src/main/java
-            /project/components/component1/gen-src/main/conf
-            /project/components/component1/gen-src/test
-            /project/components/component1/gen-src/test/java
-            /project/components/component1/gen-src/test/conf
+			/project/components/component1/gen-src
+			/project/components/component1/gen-src/main
+			/project/components/component1/gen-src/main/java
+			/project/components/component1/gen-src/main/conf
+			/project/components/component1/gen-src/test
+			/project/components/component1/gen-src/test/java
+			/project/components/component1/gen-src/test/conf
 
 
-            /project/components/component1/target/classes
-            /project/components/component1/target/test-classes
-            /project/components/component1/target/distrib
-            /project/components/component1/target/reports
-            /project/components/component1/target/reports/testing
+			/project/components/component1/target/classes
+			/project/components/component1/target/test-classes
+			/project/components/component1/target/distrib
+			/project/components/component1/target/reports
+			/project/components/component1/target/reports/testing
 
-            #############################################
+			#############################################
 
-            Overall Documentation of the build life cycle
+			Overall Documentation of the build life cycle
 
-            #############################################
+			#############################################
 
-            Clean - Remove all build artifacts from the file system.
+			Clean - Remove all build artifacts from the file system.
 
-            Validation and Configuration Targets
-            ====================================
-            Init - Initialize the build system. All properties should be set here.
-            Prep - Prepare the file system for the build.
-            GetDependencies - Resolve all dependencies.
+			Validation and Configuration Targets
+			====================================
+			Init - Initialize the build system. All properties should be set here.
+			Prep - Prepare the file system for the build.
+			GetDependencies - Resolve all dependencies.
 
-            Generate Code and Resources
-            ====================================
-            Gen - Generate or Preprocess source code and resources of any type.
-            All generated sources go to the gen-src folder.
+			Generate Code and Resources
+			====================================
+			Gen - Generate or Preprocess source code and resources of any type.
+			All generated sources go to the gen-src folder.
 
-            Build
-            ====================================
-            Build - Build anything that can be compiled or assembled.
-            UnitTest - Execute any tests that can be performed without deployment
+			Build
+			====================================
+			Build - Build anything that can be compiled or assembled.
+			UnitTest - Execute any tests that can be performed without deployment
 
-            Component Package and Test
-            ====================================
-            Pkg - Package anything that can be packaged.
-            Verify - Establish the internal integrity of the package
-            Deploy - Deploy any packages that need to be deployed.
-            SmokeTest - Execute any smoke tests
-
-            Staging, Sharing and Release
-            ====================================
-            Stage - Publish the build artifacts for local (i.e. machine local) usage.
-            Share - Publish the build artifacts for team wide usage.
-            Release - Publish the build artifacts for general (i.e. network) usage.
-
-            Integration Testing
-            ====================================
-            IntegrationTest - Execute any smoke tests
-
-            Global Release
-            ====================================
-            Perf - Performance test deployed elements
-            Val - Running coding guideline checks.
-            Doc - Document the stuff. Generates Javadoc , etc...
-
-            Properties
-            ====================================
-            All component projects must define the 'component.type' property.
-            The component type will be used to determine what submodule targets will be called.
-            The common.XML defines a few common ones, and provides the code for those types.
-
-            to be one of the following:
-
-            'root' - A top level project whos sole job is to call other projects
-                        - There should RARELY be more that one of these in a project hierarchy.
-
-            'common'    - A top level project that contains all common build scripts and such.
-                        - There should never be more that one of these in a project hierarchy.
-                        - It will typically only describe those dependencies that are build specific
-
-            'j2ee_ejb' - Any EJB3 Session or Entity Bean
-
-            'j2ee_web_app' - EJB3 J2EE Web Application
-
-            'j2ee_enterprise_app' - EJB3 J2EE Enterprise Application
-    -->
-
-    <!--
-        How IVY works
-
-        Configure configures the resolvers with appropriate
-        configuration information as found in the ivyconf.xml file.
-
-        The build system assumes several repositories and a cache.
-
-            1. local (or personal)
-            2. shared (or team)
-            3. global (or world)
-
-        served by several resolvers.
-
-        Resolve looks at the local ivy.xml file and looks for the
-        dependencies and brings them down to the local cache
-        (** TODO PUT NAME OF PERTINENT property here **)
-
-        Repository (local)
-        Default location is ${ivy.default.ivy.user.dir}/local
-
-        Repository (shared)
-        Default location is ${ivy.default.ivy.user.dir}/shared
-
-        Repository (public)
-        Default location is ivyrep
-
-        IVY Cache =======================> Project Lib Dir
-
-    -->
-
-    <!-- The folder containing all the common build elements -->
-
-    <dirname property = "commonbuild.root.dir" file = "${ant.file.commonbuild}"/>
-
-    <property environment="env"></property>
-    <property name="env.HOME" value="${env.USERPROFILE}"/>
-
-    <echo message="Pulling the common build repository location from ${env.HOME}/common-build.repository.properties" />
-    <property file="${env.HOME}/common-build.repository.properties" />
-
-    <!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
-    <property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"></property>
-
-    <property name="ivy.install.version" value="2.2.0" />
-    <property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
-    <property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
-
-    <property name="testng.install.version" value="5.14.6" />
-    <property name="testng.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
-    <property name="testng.install.jar.file" value="${testng.install.jar.dir}/testng-${testng.install.version}.jar" />
-
-    <property name="onejar.install.version" value="0.97" />
-    <property name="onejar.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
-    <property name="onejar.install.jar.file" value="${onejar.install.jar.dir}/one-jar-ant-tasks-${onejar.install.version}.jar" />
-
-    <condition property="onejar.installed">
-        <available file="${onejar.install.jar.file}" property="onejar.installed" value="true"/>
-    </condition>
-
-    <condition property="testng.installed">
-        <available file="${testng.install.jar.file}" property="testng.installed" value="true"/>
-    </condition>
-
-    <condition property="ivy.installed">
-        <available file="${ivy.install.jar.file}" property="ivy.installed" value="true"/>
-    </condition>
-
-    <target name="DownloadIvy" unless="ivy.installed">
-           <mkdir dir="${ivy.install.jar.dir}"/>
-        <echo message="Downloading Ivy Tasks..."/>
-        <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.install.jar.file}" usetimestamp="true"/>
-    </target>
-
-    <target name="DownloadTestNG" unless="testng.installed">
-           <mkdir dir="${testng.install.jar.dir}"/>
-        <echo message="Downloading TestNG Tasks..."/>
-        <get src="${common-build.enterprise.repository}/service/local/repositories/central/content/org/testng/testng/5.14.6/testng-5.14.6.jar" dest="${testng.install.jar.dir}/testng-5.14.6.jar" usetimestamp="true"/>
-    </target>
-
-    <target name="DownloadOneJar" unless="onejar.installed">
-           <mkdir dir="${onejar.install.jar.dir}"/>
-        <echo message="Downloading One Jar Tasks..."/>
-        <get src="${common-build.enterprise.repository}/service/local/repositories/releases/content/one-jar/one-jar-ant-task/0.97/one-jar-ant-task-0.97.jar" dest="${onejar.install.jar.file}" usetimestamp="true"/>
-    </target>
-
-    <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar" description="--> install common ant tasks">
-           <path id="anttask.install.lib.path">
-            <fileset dir="${ivy.install.jar.dir}" includes="*.jar"/>
-        </path>
-        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="anttask.install.lib.path" />
-           <taskdef resource="testngtasks" classpathref="anttask.install.lib.path" />
-           <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpathref="anttask.install.lib.path" onerror="report"/>
-    </target>
-
-    <!--
-        Generates an IVY dependency report for the project.	By default this
-        report is a set of HTML files stored in the target directory
-     -->
-
-    <target name="Report" depends="GetDependencies">
-        <report todir="${comp.target.dir}"/>
-    </target>
-
-    <!--
-        Clean is the common clean target. It deletes the top level folders used for
-        built components as well as generated sources.
-     -->
-
-    <target name="Clean" depends="Init" description="Cleans the components build artifacts ">
-
-        <echo>Deleting the generated source folders</echo>
+			Component Package and Test
+			====================================
+			Pkg - Package anything that can be packaged.
+			Verify - Establish the internal integrity of the package
+			Deploy - Deploy any packages that need to be deployed.
+			SmokeTest - Execute any smoke tests
+
+			Staging, Sharing and Release
+			====================================
+			Stage - Publish the build artifacts for local (i.e. machine local) usage.
+			Share - Publish the build artifacts for team wide usage.
+			Release - Publish the build artifacts for general (i.e. network) usage.
+
+			Integration Testing
+			====================================
+			IntegrationTest - Execute any smoke tests
+
+			Global Release
+			====================================
+			Perf - Performance test deployed elements
+			Val - Running coding guideline checks.
+			Doc - Document the stuff. Generates Javadoc , etc...
+
+			Properties
+			====================================
+			All component projects must define the 'component.type' property.
+			The component type will be used to determine what submodule targets will be called.
+			The common.XML defines a few common ones, and provides the code for those types.
+
+			to be one of the following:
+
+			'root' - A top level project whos sole job is to call other projects
+						- There should RARELY be more that one of these in a project hierarchy.
+
+			'common'    - A top level project that contains all common build scripts and such.
+						- There should never be more that one of these in a project hierarchy.
+						- It will typically only describe those dependencies that are build specific
+
+			'j2ee_ejb' - Any EJB3 Session or Entity Bean
+
+			'j2ee_web_app' - EJB3 J2EE Web Application
+
+			'j2ee_enterprise_app' - EJB3 J2EE Enterprise Application
+	-->
+
+	<!--
+		How IVY works
+
+		Configure configures the resolvers with appropriate
+		configuration information as found in the ivyconf.xml file.
+
+		The build system assumes several repositories and a cache.
+
+			1. local (or personal)
+			2. shared (or team)
+			3. global (or world)
+
+		served by several resolvers.
+
+		Resolve looks at the local ivy.xml file and looks for the
+		dependencies and brings them down to the local cache
+		(** TODO PUT NAME OF PERTINENT property here **)
+
+		Repository (local)
+		Default location is ${ivy.default.ivy.user.dir}/local
+
+		Repository (shared)
+		Default location is ${ivy.default.ivy.user.dir}/shared
+
+		Repository (public)
+		Default location is ivyrep
+
+		IVY Cache =======================> Project Lib Dir
+
+	-->
+
+	<!-- The folder containing all the common build elements -->
+
+	<dirname property = "commonbuild.root.dir" file = "${ant.file.commonbuild}"/>
+
+	<property environment="env"></property> 
+	<property name="env.HOME" value="${env.USERPROFILE}"/>
+	
+	<echo message="Pulling the common build repository location from ${env.HOME}/common-build.repository.properties" /> 
+	<property file="${env.HOME}/common-build.repository.properties" />
+	
+	<!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
+	<property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"></property>
+	
+	<property name="ivy.install.version" value="2.2.0" /> 
+	<property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
+	<property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
+
+	<property name="testng.install.version" value="5.14.6" /> 
+	<property name="testng.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
+	<property name="testng.install.jar.file" value="${testng.install.jar.dir}/testng-${testng.install.version}.jar" />
+	
+	<property name="onejar.install.version" value="0.97" /> 
+	<property name="onejar.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
+	<property name="onejar.install.jar.file" value="${onejar.install.jar.dir}/one-jar-ant-tasks-${onejar.install.version}.jar" />
+
+	<condition property="onejar.installed">
+		<available file="${onejar.install.jar.file}" property="onejar.installed" value="true"/>
+	</condition>
+		
+	<condition property="testng.installed">
+		<available file="${testng.install.jar.file}" property="testng.installed" value="true"/>
+	</condition>
+	
+	<condition property="ivy.installed">
+		<available file="${ivy.install.jar.file}" property="ivy.installed" value="true"/>
+	</condition>
+	
+	<target name="DownloadIvy" unless="ivy.installed"> 
+	   	<mkdir dir="${ivy.install.jar.dir}"/> 
+		<echo message="Downloading Ivy Tasks..."/> 
+    	<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.install.jar.file}" usetimestamp="true"/>
+	</target> 
+	
+	<target name="DownloadTestNG" unless="testng.installed"> 
+	   	<mkdir dir="${testng.install.jar.dir}"/>
+		<echo message="Downloading TestNG Tasks..."/> 
+    	<get src="${common-build.enterprise.repository}/service/local/repositories/central/content/org/testng/testng/5.14.6/testng-5.14.6.jar" dest="${testng.install.jar.dir}/testng-5.14.6.jar" usetimestamp="true"/>		
+	</target> 
+
+	<target name="DownloadOneJar" unless="onejar.installed"> 
+	   	<mkdir dir="${onejar.install.jar.dir}"/>
+		<echo message="Downloading One Jar Tasks..."/> 
+    	<get src="${common-build.enterprise.repository}/service/local/repositories/releases/content/one-jar/one-jar-ant-task/0.97/one-jar-ant-task-0.97.jar" dest="${onejar.install.jar.file}" usetimestamp="true"/>		
+	</target> 
+	
+    <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar" description="--> install common ant tasks"> 
+   		<path id="anttask.install.lib.path"> 
+    	    <fileset dir="${ivy.install.jar.dir}" includes="*.jar"/> 
+    	</path> 
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="anttask.install.lib.path" />
+       	<taskdef resource="testngtasks" classpathref="anttask.install.lib.path" />
+       	<taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpathref="anttask.install.lib.path" onerror="report"/>
+    </target>    
+
+	<!--
+		Generates an IVY dependency report for the project.	By default this
+		report is a set of HTML files stored in the target directory
+	 -->
+
+	<target name="Report" depends="GetDependencies">
+		<report todir="${comp.target.dir}"/>
+	</target>
+
+	<!--
+		Clean is the common clean target. It deletes the top level folders used for
+		built components as well as generated sources.
+	 -->
+
+	<target name="Clean" depends="Init" description="Cleans the components build artifacts ">
+
+		<echo>Deleting the generated source folders</echo>
         <delete dir="${comp.gen.src.dir}" />
 
         <echo>Deleting the build target folders</echo>
@@ -305,186 +305,186 @@
 
         <echo>Deleting the lib folders</echo>
         <delete  dir="${comp.lib.dir}" />
+		
+	</target>
 
-    </target>
 
+	<!--
+		====================================
+		Validation and Configuration Targets
+		====================================
+	-->
 
-    <!--
-        ====================================
-        Validation and Configuration Targets
-        ====================================
-    -->
+	<!--
+		Init is the common initialization target.
 
-    <!--
-        Init is the common initialization target.
+		All component projects must define the 'component.type' property
+		to be 'java_lib', 'etc...'
+	 -->
 
-        All component projects must define the 'component.type' property
-        to be 'java_lib', 'etc...'
-     -->
+	<target name="Init" depends="InstallCommonAntTasks" description="Initialize the build system. All properties should be set here.">
 
-    <target name="Init" depends="InstallCommonAntTasks" description="Initialize the build system. All properties should be set here.">
+		<!--
+				Reporting
+		-->
 
-        <!--
-                Reporting
-        -->
-
-        <echo message="========================================================================="/>
-        <echo message="                          NOW BUILDING ${ant.project.name} "/>
-        <echo message="========================================================================="/>
-        <echo message="   Basedir = ${basedir}" />
-        <echo message="   Project Build File = ${ant.file.commonbuild}"/>
-        <echo message="   Component Build File = ${ant.file}"/>
-        <echo message="========================================================================="/>
-        <echo message="========================================================================="/>
+		<echo message="========================================================================="/>
+		<echo message="                          NOW BUILDING ${ant.project.name} "/>
+		<echo message="========================================================================="/>
+		<echo message="   Basedir = ${basedir}" />
+		<echo message="   Project Build File = ${ant.file.commonbuild}"/>
+		<echo message="   Component Build File = ${ant.file}"/>
+		<echo message="========================================================================="/>
+		<echo message="========================================================================="/>
 
         <!-- Get the timestamp for the start of each build -->
 
-        <tstamp/>
+		<tstamp/>
 
-        <!--
-            Versioning Info
-        -->
+		<!--
+			Versioning Info
+		-->
 
-        <!--
-            The project.version and build.number properties can be and should be overridden
-            on the command line in the CI builds. In normal development builds these values
-            should suffice.
-        -->
+		<!--
+			The project.version and build.number properties can be and should be overridden
+			on the command line in the CI builds. In normal development builds these values
+			should suffice.
+		-->
 
-        <property environment="env" /> <!-- Read in the environment as properties -->
+		<property environment="env" /> <!-- Read in the environment as properties -->
 
-        <property name="project.version" value="working"/> <!-- May have already been set by Hudson -->
+		<property name="project.version" value="working"/> <!-- May have already been set by Hudson -->
 
-        <!--
-            Check if the BUILD_NUMBER property exists, if it does we are running inside of
-            Hudson and should be using the supplied build number
-        -->
+		<!--
+			Check if the BUILD_NUMBER property exists, if it does we are running inside of
+			Hudson and should be using the supplied build number
+		-->
 
-        <condition property="build.number" value="${env.BUILD_NUMBER}" >
-            <isset property="env.BUILD_NUMBER"/>
-        </condition>
-        <property name="build.number" value="0" />
+		<condition property="build.number" value="${env.BUILD_NUMBER}" >
+			<isset property="env.BUILD_NUMBER"/>
+		</condition>
+		<property name="build.number" value="0" />
 
-        <property name="component.version" value="${project.version}.${build.number}"/>
+		<property name="component.version" value="${project.version}.${build.number}"/>
 
-        <!--
-            The IVY Cache and Local folders are ceated in the folder given by the
-            environment variable IVY_HOME and referenced in the ivy-settings.xml file.
-        -->
+		<!--
+			The IVY Cache and Local folders are ceated in the folder given by the 
+			environment variable IVY_HOME and referenced in the ivy-settings.xml file.
+		-->
+			
+		
+		<!--
+				Top level folders
+		-->
 
+		<!-- Defaults to the user name -->
+		<property name="dev.user.name" value="${user.name}"/>
 
-        <!--
-                Top level folders
-        -->
+		<!-- Put machine name in -->
+		<property name="dev.machine"  value="localhost"/>
 
-        <!-- Defaults to the user name -->
-        <property name="dev.user.name" value="${user.name}"/>
+		<!-- Conformations are test, debug, profile -->
+		<property name="dev.conformation" value="test"/>
 
-        <!-- Put machine name in -->
-        <property name="dev.machine"  value="localhost"/>
-
-        <!-- Conformations are test, debug, profile -->
-        <property name="dev.conformation" value="test"/>
-
-        <!-- Configuration Names are anything that allows you to differentiate but the reserved one is "default" -->
-        <property name="dev.configuration" value="default"/>
-
-
-        <!--
-                Top level folders
-        -->
+		<!-- Configuration Names are anything that allows you to differentiate but the reserved one is "default" -->
+		<property name="dev.configuration" value="default"/>
 
 
-        <!--
-                Component level folders
-        -->
-
-        <property name="comp.src.dir" value="${basedir}/src"/>
-        <property name="comp.gen.src.dir" value="${basedir}/gen-src"/>
-        <property name="comp.target.dir" value="${basedir}/target"/>
-        <property name="comp.lib.dir" value="${basedir}/lib"/>
-
-        <!--
-                Component level main source folders
-        -->
-
-        <property name="comp.src.main.dir" value="${comp.src.dir}/main"/>
-        <property name="comp.src.main.java.dir" value="${comp.src.main.dir}/java"/>
-        <property name="comp.src.main.conf.dir" value="${comp.src.main.dir}/conf"/>
-        <property name="comp.src.main.conf.templates.dir" value="${comp.src.main.conf.dir}/templates"/>
-
-        <!--
-                Component level generated source folders for main (i.e. non-test) code
-        -->
-
-        <property name="comp.gen.src.main.dir" value="${comp.gen.src.dir}/main"/>
-        <property name="comp.gen.src.main.java.dir" value="${comp.gen.src.main.dir}/java"/>
-        <property name="comp.gen.src.main.conf.dir" value="${comp.gen.src.main.dir}/conf"/>
-
-        <!--
-                Component level test source folders for test code
-        -->
-
-        <property name="comp.src.test.dir" value="${comp.src.dir}/test"/>
-        <property name="comp.src.test.java.dir" value="${comp.src.test.dir}/java"/>
-        <property name="comp.src.test.sql.dir" value="${comp.src.test.dir}/sql"/>
-        <property name="comp.src.test.conf.dir" value="${comp.src.test.dir}/conf"/>
+		<!--
+				Top level folders
+		-->
 
 
-        <!--
-                Component level generated source folders for main (i.e. non-test) code
-        -->
+		<!--
+				Component level folders
+		-->
 
-        <property name="comp.gen.src.test.dir" value="${comp.gen.src.dir}/test"/>
-        <property name="comp.gen.src.test.java.dir" value="${comp.gen.src.test.dir}/java"/>
-        <property name="comp.gen.src.test.conf.dir" value="${comp.gen.src.test.dir}/conf"/>
-        <property name="comp.gen.src.test.sql.dir" value="${comp.gen.src.test.dir}/sql"/>
+		<property name="comp.src.dir" value="${basedir}/src"/>
+		<property name="comp.gen.src.dir" value="${basedir}/gen-src"/>
+		<property name="comp.target.dir" value="${basedir}/target"/>
+		<property name="comp.lib.dir" value="${basedir}/lib"/>
+		
+		<!--
+				Component level main source folders
+		-->
 
-        <!--
-                Component level target class folders
-        -->
+		<property name="comp.src.main.dir" value="${comp.src.dir}/main"/>
+		<property name="comp.src.main.java.dir" value="${comp.src.main.dir}/java"/>
+		<property name="comp.src.main.conf.dir" value="${comp.src.main.dir}/conf"/>
+		<property name="comp.src.main.conf.templates.dir" value="${comp.src.main.conf.dir}/templates"/>
 
-        <property name="comp.target.main.classes.dir" value="${comp.target.dir}/classes"/>
-        <property name="comp.target.test.classes.dir" value="${comp.target.dir}/test-classes"/>
+		<!--
+				Component level generated source folders for main (i.e. non-test) code
+		-->
 
-        <!--
-                Component level target dependencies folders.
+		<property name="comp.gen.src.main.dir" value="${comp.gen.src.dir}/main"/>
+		<property name="comp.gen.src.main.java.dir" value="${comp.gen.src.main.dir}/java"/>
+		<property name="comp.gen.src.main.conf.dir" value="${comp.gen.src.main.dir}/conf"/>
 
-                Used for storing dependent jars, wars, ears, resources, etc used in building a given target
-        -->
+		<!--
+				Component level test source folders for test code
+		-->
 
-        <property name="comp.target.main.dependencies.dir" value="${comp.target.dir}/dependencies"/>
-
-
-        <property name="comp.target.dist.dir" value="${comp.target.dir}/distrib"/>
-        <property name="comp.target.dist.jar.dir" value="${comp.target.dist.dir}/jars"/>
-        <property name="comp.target.dist.war.dir" value="${comp.target.dist.dir}/wars"/>
-        <property name="comp.target.dist.ear.dir" value="${comp.target.dist.dir}/ears"/>
-        <property name="comp.target.dist.ejb.dir" value="${comp.target.dist.dir}/ejbs"/>
-        <property name="comp.target.dist.javadocs.dir" value="${comp.target.dist.dir}/javadocs"/>
-        <property name="comp.target.dist.installer.dir" value="${comp.target.dist.dir}/installers"/>
-
-        <property name="comp.target.javadocs.dir" value="${comp.target.dir}/javadocs"/>
-
-        <property name="comp.target.reports.dir" value="${comp.target.dir}/reports"/>
-        <property name="comp.target.reports.test.dir" value="${comp.target.reports.dir}/test"/>
-        <property name="comp.target.reports.validation.dir" value="${comp.target.reports.dir}/validation"/>
+		<property name="comp.src.test.dir" value="${comp.src.dir}/test"/>
+		<property name="comp.src.test.java.dir" value="${comp.src.test.dir}/java"/>
+		<property name="comp.src.test.sql.dir" value="${comp.src.test.dir}/sql"/>
+		<property name="comp.src.test.conf.dir" value="${comp.src.test.dir}/conf"/>
 
 
-        <!--
-                Flag the existence of Unit and Smoke test source is available
-        -->
+		<!--
+				Component level generated source folders for main (i.e. non-test) code
+		-->
 
-        <property name="comp.src.test.unit.java.pattern" value="**/*Test.java"/>
-        <property name="comp.src.test.smoke.java.pattern" value="**/*SmokeTest.java"/>
+		<property name="comp.gen.src.test.dir" value="${comp.gen.src.dir}/test"/>
+		<property name="comp.gen.src.test.java.dir" value="${comp.gen.src.test.dir}/java"/>
+		<property name="comp.gen.src.test.conf.dir" value="${comp.gen.src.test.dir}/conf"/>
+		<property name="comp.gen.src.test.sql.dir" value="${comp.gen.src.test.dir}/sql"/>
 
-        <available file="${comp.src.test.java.dir}" type="dir" property="comp.src.test.unit.java.dir.present" />
+		<!--
+				Component level target class folders
+		-->
 
-        <pathconvert property="comp.src.test.smoke.java.dir.present" setonempty="false" pathsep=" " >
-            <path location="${comp.src.test.java.dir}/${comp.src.test.smoke.java.pattern}"/>
-        </pathconvert>
+		<property name="comp.target.main.classes.dir" value="${comp.target.dir}/classes"/>
+		<property name="comp.target.test.classes.dir" value="${comp.target.dir}/test-classes"/>
 
-        <!--
+		<!--
+				Component level target dependencies folders.
+
+				Used for storing dependent jars, wars, ears, resources, etc used in building a given target
+		-->
+
+		<property name="comp.target.main.dependencies.dir" value="${comp.target.dir}/dependencies"/>
+
+
+		<property name="comp.target.dist.dir" value="${comp.target.dir}/distrib"/>
+		<property name="comp.target.dist.jar.dir" value="${comp.target.dist.dir}/jars"/>
+		<property name="comp.target.dist.war.dir" value="${comp.target.dist.dir}/wars"/>
+		<property name="comp.target.dist.ear.dir" value="${comp.target.dist.dir}/ears"/>
+		<property name="comp.target.dist.ejb.dir" value="${comp.target.dist.dir}/ejbs"/>
+		<property name="comp.target.dist.javadocs.dir" value="${comp.target.dist.dir}/javadocs"/>
+		<property name="comp.target.dist.installer.dir" value="${comp.target.dist.dir}/installers"/>
+
+		<property name="comp.target.javadocs.dir" value="${comp.target.dir}/javadocs"/>
+
+		<property name="comp.target.reports.dir" value="${comp.target.dir}/reports"/>
+		<property name="comp.target.reports.test.dir" value="${comp.target.reports.dir}/test"/>
+		<property name="comp.target.reports.validation.dir" value="${comp.target.reports.dir}/validation"/>
+
+
+		<!--
+				Flag the existence of Unit and Smoke test source is available
+		-->
+
+		<property name="comp.src.test.unit.java.pattern" value="**/*Test.java"/>
+		<property name="comp.src.test.smoke.java.pattern" value="**/*SmokeTest.java"/>
+
+		<available file="${comp.src.test.java.dir}" type="dir" property="comp.src.test.unit.java.dir.present" />
+
+		<pathconvert property="comp.src.test.smoke.java.dir.present" setonempty="false" pathsep=" " >
+			<path location="${comp.src.test.java.dir}/${comp.src.test.smoke.java.pattern}"/>
+		</pathconvert>
+
+		<!--
                 Flag the existence of testng.xml file
         -->
 
@@ -493,427 +493,427 @@
 
 
         <!--
-                Library resolution folders
-        -->
+				Library resolution folders
+		-->
 
-        <!--
-                Ivy Configuration
-        -->
+		<!--
+				Ivy Configuration
+		-->
 
-        <property name="ivy.distrib.dir" value="${comp.target.dist.dir}"/>
-
+		<property name="ivy.distrib.dir" value="${comp.target.dist.dir}"/>
+		
 <!--
-        <property name="ivy.local.default.ivy.pattern" value="[organisation]/[module]/ivys/ivy-[revision].xml"/>
+		<property name="ivy.local.default.ivy.pattern" value="[organisation]/[module]/ivys/ivy-[revision].xml"/>
 -->
 
-    </target>
+	</target>
 
-    <!--
-        Prep is the common preparation target.
+	<!--
+		Prep is the common preparation target.
 
-        At the end of its execution, it calls a project type specific target Such as Prep.common
-     -->
+		At the end of its execution, it calls a project type specific target Such as Prep.common
+	 -->
 
-    <target name="Prep" depends="Init" description="Prepares the file system for building the component">
+	<target name="Prep" depends="Init" description="Prepares the file system for building the component">
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Prep "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Prep "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
-        <mkdir dir="${comp.target.main.classes.dir}"/>
-        <mkdir dir="${comp.target.test.classes.dir}"/>
-        <mkdir dir="${comp.target.dist.dir}"/>
-        <mkdir dir="${comp.gen.src.main.java.dir}"/>
-        <mkdir dir="${comp.gen.src.main.conf.dir}"/>
-        <mkdir dir="${comp.gen.src.test.sql.dir}"/>
-        <mkdir dir="${comp.target.reports.test.dir}"/>
-        <mkdir dir="${comp.target.reports.validation.dir}"/>
+		<mkdir dir="${comp.target.main.classes.dir}"/>
+		<mkdir dir="${comp.target.test.classes.dir}"/>
+		<mkdir dir="${comp.target.dist.dir}"/>
+		<mkdir dir="${comp.gen.src.main.java.dir}"/>
+		<mkdir dir="${comp.gen.src.main.conf.dir}"/>
+		<mkdir dir="${comp.gen.src.test.sql.dir}"/>
+		<mkdir dir="${comp.target.reports.test.dir}"/>
+		<mkdir dir="${comp.target.reports.validation.dir}"/>
 
-        <antcall  inheritRefs="true" target="Prep.${component.type}" />
-    </target>
+		<antcall  inheritRefs="true" target="Prep.${component.type}" />
+	</target>
 
-    <target name="Prep.root">
-        <mkdir dir="${comp.target.dist.javadocs.dir}"/>
-        <mkdir dir="${comp.target.javadocs.dir}"/>
-    </target>
+	<target name="Prep.root">
+		<mkdir dir="${comp.target.dist.javadocs.dir}"/>
+		<mkdir dir="${comp.target.javadocs.dir}"/>
+	</target>
 
-    <target name="Prep.common"/>
+	<target name="Prep.common"/>
 
-    <!--
-        GetDependencies is the common dependency resolution target.
-     -->
+	<!--
+		GetDependencies is the common dependency resolution target.
+	 -->
 
-    <target name="GetDependencies" depends="Prep" description="Resolve and (if necessary) retrieve dependencies.">
+	<target name="GetDependencies" depends="Prep" description="Resolve and (if necessary) retrieve dependencies.">
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} GetDependencies "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} GetDependencies "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
-        <ivy:settings file="${commonbuild.root.dir}/ivy-settings.xml">
-            <ivy:credentials host="192.168.168.7"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
-                <ivy:credentials host="artifactrepo"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
-        </ivy:settings>
+    	<ivy:settings file="${commonbuild.root.dir}/ivy-settings.xml">
+    		<ivy:credentials host="192.168.168.7"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
+				<ivy:credentials host="artifactrepo"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
+		</ivy:settings>
 
-        <ivy:resolve  haltonfailure="true" />
+		<ivy:resolve  haltonfailure="true" />
 
-        <ivy:cachefileset setid="rslvd.build.set" conf="build" haltonfailure="false"/>
-        <ivy:cachepath pathid="rslvd.build.path" conf="build"  haltonfailure="false"/>
+		<ivy:cachefileset setid="rslvd.build.set" conf="build" haltonfailure="false"/>
+		<ivy:cachepath pathid="rslvd.build.path" conf="build"  haltonfailure="false"/>
 
-        <ivy:cachefileset setid="rslvd.compile.set" conf="compile" haltonfailure="false"/>
-        <ivy:cachepath pathid="rslvd.compile.path" conf="compile" haltonfailure="false"/>
+		<ivy:cachefileset setid="rslvd.compile.set" conf="compile" haltonfailure="false"/>
+		<ivy:cachepath pathid="rslvd.compile.path" conf="compile" haltonfailure="false"/>
 
-        <ivy:cachefileset setid="rslvd.provided.set" conf="provided" haltonfailure="false"/>
-        <ivy:cachepath pathid="rslvd.provided.path" conf="provided" haltonfailure="false"/>
+		<ivy:cachefileset setid="rslvd.provided.set" conf="provided" haltonfailure="false"/>
+		<ivy:cachepath pathid="rslvd.provided.path" conf="provided" haltonfailure="false"/>
 
-        <ivy:cachefileset setid="rslvd.deploy.set" conf="deploy" haltonfailure="false"/>
-        <ivy:cachepath pathid="rslvd.deploy.path" conf="deploy" haltonfailure="false"/>
+		<ivy:cachefileset setid="rslvd.deploy.set" conf="deploy" haltonfailure="false"/>
+		<ivy:cachepath pathid="rslvd.deploy.path" conf="deploy" haltonfailure="false"/>
 
-        <ivy:cachefileset setid="rslvd.test.set" conf="test" haltonfailure="false"/>
-        <ivy:cachepath pathid="rslvd.test.path" conf="test" haltonfailure="false"/>
+		<ivy:cachefileset setid="rslvd.test.set" conf="test" haltonfailure="false"/>
+		<ivy:cachepath pathid="rslvd.test.path" conf="test" haltonfailure="false"/>
 
-        <pathconvert property="resolved.test.dependencies" refid="rslvd.test.path"/>
+		<pathconvert property="resolved.test.dependencies" refid="rslvd.test.path"/>
+		
+		<path id="resolved.build.tool.path">
+			<path refid="rslvd.build.path" />
+		</path>
 
-        <path id="resolved.build.tool.path">
-            <path refid="rslvd.build.path" />
-        </path>
+		<path id="resolved.build.and.compiled.path">
+			<path refid="rslvd.compile.path"/>
+			<path refid="rslvd.provided.path"/>
+			<path location="${comp.target.main.classes.dir}"/>
+		</path>
 
-        <path id="resolved.build.and.compiled.path">
-            <path refid="rslvd.compile.path"/>
-            <path refid="rslvd.provided.path"/>
-            <path location="${comp.target.main.classes.dir}"/>
-        </path>
-
-        <path id="resolved.build.and.testable.path">
-            <path refid="resolved.build.and.compiled.path"/>
-            <path refid="rslvd.test.path"/>
-            <path location="${comp.target.test.classes.dir}"/>
-        </path>
-
-    </target>
-
-
-    <!--
-        ====================================
-        Generate Code and Resources
-        ====================================
-    -->
-
-    <!--
-        Gen is the common source code generation target.
-
-        Component 'instance specific' code generation occurs in the Gen.ComponentType target
-
-        The Comp.Gen target has a default implementation which can be overridden in the component's build.xml file
-     -->
-
-    <target name="Gen" depends="GetDependencies">
-
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Generate Source "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
-
-        <antcall  inheritRefs="true" target="Gen.${component.type}" />
-    </target>
-
-    <target name="Gen.common"/>
-    <target name="Gen.root"/>
-
-
-    <!--
-        ====================================
-                    Build
-        ====================================
-    -->
-
-    <!--
-        Build is the common build target.
-     -->
-
-    <target name="Build" depends="Gen">
-
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Build "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
-
-        <antcall  inheritRefs="true" target="Build.${component.type}" />
-    </target>
-
-    <!--
-
-    -->
-
-    <target name="Build.root" >
-
-        <dirset id="javadoc.src.dirset" dir="${commonbuild.root.dir}/.." includes="**/src/main/java"/>
-        <fileset id="javadoc.classpath.fileset" dir="${user.home}/.ivy/cache" includes="**/*.jar">
-
-        </fileset>
-
-         <pathconvert property="javadoc.src.path" refid="javadoc.src.dirset"/>
-        <pathconvert property="javadoc.classpath.path" refid="javadoc.classpath.fileset"/>
-
-        <echo>ECHO ${javadoc.classpath.path}</echo>
-          <javadoc
-                       destdir="${comp.target.javadocs.dir}"
-                       windowtitle="API for ${component.version}"
-                          sourcepath="${javadoc.src.path}"
-                          classpath="${javadoc.classpath.path}"
-                          verbose="false"
-                          author="no"
-                          version="no"
-                          nodeprecated="true"
-                          public="true"
-
-              >
-            <arg value="-quiet"/>
-          </javadoc>
-    </target>
-
-    <target name="Build.common"/>
-
-    <!--
-        Compile.Java is the common java compilation target.
-
-        It is used by a variety of build targets
-     -->
-
-    <target name="Compile.Core.Java" >
-
-        <javac destdir="${comp.target.main.classes.dir}" debug="true" compiler="javac1.5" >
-            <src path="${comp.src.main.java.dir}"/>
-            <src path="${comp.gen.src.main.java.dir}"/>
-            <classpath refid="resolved.build.and.compiled.path"/>
-        </javac>
-
-        <copy todir="${comp.target.main.classes.dir}">
-            <fileset dir="${comp.src.main.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
-            </fileset>
-            <fileset dir="${comp.gen.src.main.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
-            </fileset>
-        </copy>
+		<path id="resolved.build.and.testable.path">
+			<path refid="resolved.build.and.compiled.path"/>
+			<path refid="rslvd.test.path"/>
+			<path location="${comp.target.test.classes.dir}"/>
+		</path>
 
     </target>
 
-    <target name="Compile.Test.Java" >
-        <javac destdir="${comp.target.test.classes.dir}" debug="true" compiler="javac1.5">
-            <src path="${comp.src.test.java.dir}"/>
-            <classpath refid="resolved.build.and.testable.path"/>
-        </javac>
 
-        <copy todir="${comp.target.main.classes.dir}">
-            <fileset dir="${comp.src.test.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
-            </fileset>
-        </copy>
+	<!--
+		====================================
+		Generate Code and Resources
+		====================================
+	-->
 
-    </target>
+	<!--
+		Gen is the common source code generation target.
 
-    <!--
-        UnitTest is the Unit Testing resolution target.
-        This requires a file at src/java/test/testng.xml.
-     -->
+		Component 'instance specific' code generation occurs in the Gen.ComponentType target
+
+		The Comp.Gen target has a default implementation which can be overridden in the component's build.xml file
+	 -->
+
+	<target name="Gen" depends="GetDependencies">
+
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Generate Source "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
+
+		<antcall  inheritRefs="true" target="Gen.${component.type}" />
+	</target>
+
+	<target name="Gen.common"/>
+	<target name="Gen.root"/>
+
+
+	<!--
+		====================================
+					Build
+		====================================
+	-->
+
+	<!--
+		Build is the common build target.
+	 -->
+
+	<target name="Build" depends="Gen">
+
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Build "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
+
+		<antcall  inheritRefs="true" target="Build.${component.type}" />
+	</target>
+
+	<!--
+
+	-->
+
+	<target name="Build.root" >
+
+		<dirset id="javadoc.src.dirset" dir="${commonbuild.root.dir}/.." includes="**/src/main/java"/>
+		<fileset id="javadoc.classpath.fileset" dir="${user.home}/.ivy/cache" includes="**/*.jar">
+
+		</fileset>
+
+ 		<pathconvert property="javadoc.src.path" refid="javadoc.src.dirset"/>
+		<pathconvert property="javadoc.classpath.path" refid="javadoc.classpath.fileset"/>
+
+		<echo>ECHO ${javadoc.classpath.path}</echo>
+		  <javadoc
+			           destdir="${comp.target.javadocs.dir}"
+			           windowtitle="API for ${component.version}"
+    	  				sourcepath="${javadoc.src.path}"
+		  				classpath="${javadoc.classpath.path}"
+		  				verbose="false"
+		  				author="no"
+		  				version="no"
+		  				nodeprecated="true"
+		  				public="true"
+
+		  	>
+			<arg value="-quiet"/>
+		  </javadoc>
+	</target>
+
+	<target name="Build.common"/>
+
+	<!--
+		Compile.Java is the common java compilation target.
+
+		It is used by a variety of build targets
+	 -->
+
+	<target name="Compile.Core.Java" >
+
+		<javac destdir="${comp.target.main.classes.dir}" debug="true" target="1.5" >
+			<src path="${comp.src.main.java.dir}"/>
+			<src path="${comp.gen.src.main.java.dir}"/>
+			<classpath refid="resolved.build.and.compiled.path"/>
+		</javac>
+		
+		<copy todir="${comp.target.main.classes.dir}">
+			<fileset dir="${comp.src.main.java.dir}">
+				<include name="**/*.properties"/>
+				<include name="**/*.page"/>
+				<include name="**/*.txt"/>
+			</fileset>
+			<fileset dir="${comp.gen.src.main.java.dir}">
+				<include name="**/*.properties"/>
+				<include name="**/*.page"/>
+				<include name="**/*.txt"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+	<target name="Compile.Test.Java" >
+		<javac destdir="${comp.target.test.classes.dir}" debug="true" target="1.5">
+			<src path="${comp.src.test.java.dir}"/>
+			<classpath refid="resolved.build.and.testable.path"/>
+		</javac>
+
+		<copy todir="${comp.target.main.classes.dir}">
+			<fileset dir="${comp.src.test.java.dir}">
+				<include name="**/*.properties"/>
+				<include name="**/*.page"/>
+				<include name="**/*.txt"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!--
+            UnitTest is the Unit Testing resolution target.
+            This requires a file at src/java/test/testng.xml.
+	 -->
 
     <target name="UnitTest" depends="GetDependencies" description="Unit test all non-deployable code" if="testng.file.present">
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Unit Test "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Unit Test "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
         <!-- Execute all the unit tests in the component's testng.xml file -->
 
         <echo>${testng.file}</echo>
-        <testng junit="" classpathref="resolved.build.and.testable.path" outputdir="${comp.target.reports.test.dir}" useDefaultListeners="false"
+		<testng junit="" classpathref="resolved.build.and.testable.path" outputdir="${comp.target.reports.test.dir}" useDefaultListeners="false"
             listeners="org.testng.reporters.XMLReporter"
-            haltOnFailure="false">
+			haltOnFailure="false">
             <xmlfileset dir="${comp.src.test.java.dir}" includes="testng.xml"/>
-        </testng>
-    </target>
+		</testng>
+	</target>
 
-    <!--
-        ====================================
-            Component Package and Test
-        ====================================
-    -->
+	<!--
+		====================================
+			Component Package and Test
+		====================================
+	-->
 
-    <!--
-        Pkg is the common packaging target.
-     -->
+	<!--
+		Pkg is the common packaging target.
+	 -->
 
-    <target name="Pkg" depends="Build" description="Packages the component according to its type" >
+	<target name="Pkg" depends="Build" description="Packages the component according to its type" >
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Package "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Package "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
-        <antcall  inheritRefs="true" target="Pkg.${component.type}"/>
-    </target>
-
-
-    <target name="Pkg.common"/>
-    <target name="Pkg.root">
-        <jar basedir="${comp.target.javadocs.dir}" jarfile="${comp.target.dist.javadocs.dir}/${ivy.module}-javadoc.jar" />
-    </target>
-
-    <!--
-        Verify is the common verification target.
-
-        Component 'instance specific' verification occurs in the Comp.Verify target
-
-        The Comp.Verify target has a default implementation which can be overridden in the component's build.xml file
-     -->
-
-    <target name="Verify" depends="Pkg" description="Validates that the package is a valid package">
-        <antcall  inheritRefs="true" target="Verify.${component.type}"/>
-    </target>
-
-    <!--
-        Deploy is the common deployment target.
-     -->
-
-    <target name="Deploy" depends="Stage" description="Deploys applications and test packages">
-        <antcall  inheritRefs="true" target="Deploy.${component.type}.to.${appserver}"/>
-    </target>
+		<antcall  inheritRefs="true" target="Pkg.${component.type}"/>
+	</target>
 
 
-    <target name="Shutdown.jboss" depends="Init" >
+	<target name="Pkg.common"/>
+	<target name="Pkg.root">
+		<jar basedir="${comp.target.javadocs.dir}" jarfile="${comp.target.dist.javadocs.dir}/${ivy.module}-javadoc.jar" />
+	</target>
 
-        <java classname="org.jboss.Shutdown" classpath="${appserver.dir}/bin/shutdown.jar;${appserver.dir}/bin/../client/jbossall-client.jar">
-            <env key="JAVA_HOME" value="${java.home}" />
-            <jvmarg value="-Djboss.boot.loader.name=run.bat"/>
-            <arg line="--server=localhost:${jndi.port}"/>
-        </java>
+	<!--
+		Verify is the common verification target.
 
-    </target>
+		Component 'instance specific' verification occurs in the Comp.Verify target
 
-    <!--
-        SmokeTest is the common smoke testing target.
-     -->
+		The Comp.Verify target has a default implementation which can be overridden in the component's build.xml file
+	 -->
 
-    <target name="SmokeTest" description="Smoke tests the already deployed component" depends="Init" >
-        <antcall  inheritRefs="true" target="SmokeTest.Test.${component.type}"/>
-    </target>
+	<target name="Verify" depends="Pkg" description="Validates that the package is a valid package">
+		<antcall  inheritRefs="true" target="Verify.${component.type}"/>
+	</target>
 
-    <target name="PopulateForSmokeTest" depends="GetDependencies" description="Populates the database for the Smoke Tests">
-        <antcall  inheritRefs="true" target="PopulateForSmokeTest.${rdbms.name}" />
-    </target>
+	<!--
+		Deploy is the common deployment target.
+	 -->
 
-    <target name="PopulateForSmokeTest.oracle" depends="GetDependencies"/>
-    <target name="PopulateForSmokeTest.sqlserver" depends="GetDependencies"/>
+	<target name="Deploy" depends="Stage" description="Deploys applications and test packages">
+		<antcall  inheritRefs="true" target="Deploy.${component.type}.to.${appserver}"/>
+	</target>
 
-    <!--
-        ====================================
-        Local Release
-        ====================================
-    -->
 
-    <!--
-        Stage is the local publishing target. It makes a component available for local
-        (non-shared) usage. i.e. typically within the same build.
-     -->
+	<target name="Shutdown.jboss" depends="Init" >
+
+		<java classname="org.jboss.Shutdown" classpath="${appserver.dir}/bin/shutdown.jar;${appserver.dir}/bin/../client/jbossall-client.jar">
+			<env key="JAVA_HOME" value="${java.home}" />
+			<jvmarg value="-Djboss.boot.loader.name=run.bat"/>
+			<arg line="--server=localhost:${jndi.port}"/>
+		</java>
+
+	</target>
+
+	<!--
+		SmokeTest is the common smoke testing target.
+	 -->
+
+	<target name="SmokeTest" description="Smoke tests the already deployed component" depends="Init" >
+		<antcall  inheritRefs="true" target="SmokeTest.Test.${component.type}"/>
+	</target>
+
+	<target name="PopulateForSmokeTest" depends="GetDependencies" description="Populates the database for the Smoke Tests">
+		<antcall  inheritRefs="true" target="PopulateForSmokeTest.${rdbms.name}" />
+	</target>
+
+	<target name="PopulateForSmokeTest.oracle" depends="GetDependencies"/>
+	<target name="PopulateForSmokeTest.sqlserver" depends="GetDependencies"/>
+
+	<!--
+		====================================
+		Local Release
+		====================================
+	-->
+
+	<!--
+		Stage is the local publishing target. It makes a component available for local
+		(non-shared) usage. i.e. typically within the same build.
+	 -->
 
     <target name="Stage" depends="Pkg" description="Publish artifacts to the local repository">
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Stage "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Stage "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
-        <ivy:deliver pubrevision="${component.version}"/>
+    	<ivy:deliver pubrevision="${component.version}"/>
         <ivy:publish resolver="local" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
-     </target>
+ 	</target>
 
     <target name="Share" depends="Stage" description="Publish artifacts with ivy">
 
-        <echo message="							============================================="/>
-        <echo message="                         ${ant.project.name} Share "/>
-        <echo message="							============================================="/>
-        <echo message=" "/>
+		<echo message="							============================================="/>
+		<echo message="                         ${ant.project.name} Share "/>
+		<echo message="							============================================="/>
+		<echo message=" "/>
 
-        <ivy:deliver pubrevision="${component.version}"/>
+    	<ivy:deliver pubrevision="${component.version}"/>
         <ivy:publish resolver="enterprise-releases" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
-     </target>
+ 	</target>
 
 
-    <!--
-        IntegrationTest is the common integration testing target.
-     -->
+	<!--
+		IntegrationTest is the common integration testing target.
+	 -->
 
-    <target name="IntegrationTest" depends="Init" description="Performs an integration test agains the overall system"/>
+	<target name="IntegrationTest" depends="Init" description="Performs an integration test agains the overall system"/>
 
-    <target name="GenerateDependencyGraph" description="Generate jar dependency graph"   depends="GetDependencies">
-        <ivy:report todir="${comp.target.reports.dir}" graph="true"/>
-    </target>
+	<target name="GenerateDependencyGraph" description="Generate jar dependency graph"   depends="GetDependencies">
+		<ivy:report todir="${comp.target.reports.dir}" graph="true"/>
+	</target>
 
-    <target name="GenerateRepositoryDependencyGraph" description="Generate jar dependency graph"   depends="GetDependencies">
-        <ivy:repreport todir="${comp.target.reports.dir}" graph="true"/>
-    </target>
+	<target name="GenerateRepositoryDependencyGraph" description="Generate jar dependency graph"   depends="GetDependencies">
+		<ivy:repreport todir="${comp.target.reports.dir}" graph="true"/>
+	</target>
 
     <target name="CleanCache" depends="Init" description="Removes all project specific artifacts from the cache and local storage">
-        <delete dir="${ivy.local.default.root}/${ivy.org}" failonerror="true" verbose="true"/>
-        <delete dir="${ivy.cache.dir}/${ivy.org}" failonerror="true" verbose="true"/>
-    </target>
+		<delete dir="${ivy.local.default.root}/${ivy.org}" failonerror="true" verbose="true"/>
+		<delete dir="${ivy.cache.dir}/${ivy.org}" failonerror="true" verbose="true"/>
+	</target>
 
-    <!--
-            Project Specific targets
+	<!--
+			Project Specific targets
 
-            These targets are intentionally designed to be overridden by the
-            components projects.
-    -->
+			These targets are intentionally designed to be overridden by the
+			components projects.
+	-->
 
-    <!--
-        Common Macros
-    -->
+	<!--
+		Common Macros
+	-->
 
-    <!--
-        Iterates over ALL the projects build files and applies the target
-    -->
+	<!--
+		Iterates over ALL the projects build files and applies the target
+	-->
 
     <macrodef name="iterate">
 
-        <attribute name="parentfolder" default=""/>
-    <attribute name="target" default=""/>
+    	<attribute name="parentfolder" default=""/>
+	<attribute name="target" default=""/>
 
-          <sequential>
-            <subant target="@{target}">
-                <fileset dir="@{parentfolder}" includes="**/build.xml" />
-            </subant>
-        </sequential>
+      	<sequential>
+			<subant target="@{target}">
+				<fileset dir="@{parentfolder}" includes="**/build.xml" />
+			</subant>
+	    </sequential>
 
     </macrodef>
 
-    <!--
-        Iterates over ALL the project build files (in dependency order) and applies the target
-    -->
+	<!--
+		Iterates over ALL the project build files (in dependency order) and applies the target
+	-->
 
     <macrodef name="iterate-in-build-order">
 
-        <attribute name="parentfolder" default=""/>
-           <attribute name="target" default=""/>
-           <attribute name="reverse" default="false"/>
+    	<attribute name="parentfolder" default=""/>
+   		<attribute name="target" default=""/>
+   		<attribute name="reverse" default="false"/>
 
-          <sequential>
+      	<sequential>
 
-              <ivy:buildlist reverse="@{reverse}" reference="ordered-build-path">
-                  <fileset dir="@{parentfolder}" includes="**/build.xml" excludes="**/root/build.xml"/>
-              </ivy:buildlist>
+      		<ivy:buildlist reverse="@{reverse}" reference="ordered-build-path">
+      			<fileset dir="@{parentfolder}" includes="**/build.xml" excludes="**/root/build.xml"/>
+      		</ivy:buildlist>
 
-              <subant target="@{target}" buildpathref="ordered-build-path"/>
+      		<subant target="@{target}" buildpathref="ordered-build-path"/>
 
-        </sequential>
+	    </sequential>
     </macrodef>
 
 </project>
