@@ -263,13 +263,13 @@
 	<target name="DownloadTestNG" unless="testng.installed"> 
 	   	<mkdir dir="${testng.install.jar.dir}"/>
 		<echo message="Downloading TestNG Tasks..."/> 
-    	<get src="http://repo1.maven.org/maven2/org/testng/testng/6.3.1/testng-6.3.1.jar" dest="${testng.install.jar.dir}/${testng.install.jar.file}" usetimestamp="true"/>		
+    	<get src="http://repo1.maven.org/maven2/org/testng/testng/${testng.install.version}/testng-${testng.install.version}.jar" dest="${testng.install.jar.file}" usetimestamp="true"/>		
 	</target> 
 
 	<target name="DownloadOneJar" unless="onejar.installed"> 
 	   	<mkdir dir="${onejar.install.jar.dir}"/>
-		<echo message="Downloading One Jar Tasks..."/> 
-    	<get src="${common-build.enterprise.repository}/service/local/repositories/releases/content/one-jar/one-jar-ant-task/0.97/one-jar-ant-task-0.97.jar" dest="${onejar.install.jar.file}" usetimestamp="true"/>		
+			<echo message="Downloading One Jar Tasks..."/> 
+    	<get src="http://sourceforge.net/projects/one-jar/files/one-jar/one-jar-${onejar.install.version}/one-jar-ant-task-${onejar.install.version}.jar/download" dest="${onejar.install.jar.file}" usetimestamp="true"/>		
 	</target> 
 	
     <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar" description="--> install common ant tasks"> 
