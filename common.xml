@@ -234,7 +234,7 @@
 	<property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
 	<property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
 
-	<property name="testng.install.version" value="5.14.6" /> 
+	<property name="testng.install.version" value="6.3.1" /> 
 	<property name="testng.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
 	<property name="testng.install.jar.file" value="${testng.install.jar.dir}/testng-${testng.install.version}.jar" />
 	
@@ -263,7 +263,7 @@
 	<target name="DownloadTestNG" unless="testng.installed"> 
 	   	<mkdir dir="${testng.install.jar.dir}"/>
 		<echo message="Downloading TestNG Tasks..."/> 
-    	<get src="${common-build.enterprise.repository}/service/local/repositories/central/content/org/testng/testng/5.14.6/testng-5.14.6.jar" dest="${testng.install.jar.dir}/testng-5.14.6.jar" usetimestamp="true"/>		
+    	<get src="http://repo1.maven.org/maven2/org/testng/testng/6.3.1/testng-6.3.1.jar" dest="${testng.install.jar.dir}/${testng.install.jar.file}" usetimestamp="true"/>		
 	</target> 
 
 	<target name="DownloadOneJar" unless="onejar.installed"> 
