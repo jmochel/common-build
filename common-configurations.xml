@@ -1,7 +1,7 @@
 <configurations>
 	<!--
 		Build dependencies are those needed only for the execution of the
-		build (Preprocerssors , etc...)
+		build (Preprocessors , etc...)
 	-->
 	<conf name="build" description="Dependencies needed to build the code base"
 		visibility="public" />
@@ -56,14 +56,8 @@
 		Oracle database drivers. So the 'test' dependency would be HSQLDB and
 		the 'deploy' dependency will be microsoft and oracle jdbc drivers.
 	-->
-	<conf name="test" extends="core,stub"
+	<conf name="test" extends="core"
 		description="Test Time dependencies (those dependencies needed in the running of tests"
 		visibility="public" />
-	<!--
-		Stub dependencies are those that build system needs to replace
-		container or other 'provided' dependencies when running tests. The
-		user may have mock classes for the java security API.
-	-->
-	<conf name="stub" description="Stub or Mock dependencies needed by test"
-		visibility="public" />
+
 </configurations>

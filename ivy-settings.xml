@@ -2,10 +2,11 @@
 <ivysettings>
 
 	<properties environment="env"/>
-	<property name="env.HOME" value="${env.USERPROFILE}"/>
+	<property name="env.HOME" value="${env.USERPROFILE}" override="false"/>
 	<properties file="${env.HOME}/common-build.repository.properties" />
+
 	<!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
-	<property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"></property>
+	<property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus" override="false"/>
 	
 	<!-- Local Repo Properties -->	
 	<property name="ivy.local.default.root"             value="${ivy.default.ivy.user.dir}/local" override="false"/>
