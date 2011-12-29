@@ -552,9 +552,17 @@
 		<echo message="							============================================="/>
 		<echo message=" "/>
 
+		<!-- Define the properies needed for sharing artifacts -->
+		
+		<property name="artifactrepo.address" value="artifactrepo"/>
+		<property name="artifactrepo.realm" value="Sonatype Nexus Repository Manager"/>
+		<property name="artifactrepo.username" value="admin" />
+		<property name="artifactrepo.passwd" value="admin123"/>
+		
     	<ivy:settings file="${commonbuild.root.dir}/ivy-settings.xml">
-				<ivy:credentials host="artifactrepo"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
+				<ivy:credentials host="${artifactrepo.address}"	realm="${artifactrepo.realm}" username="${artifactrepo.username}" passwd="${artifactrepo.passwd}"/>
 		</ivy:settings>
+
 
 		<ivy:resolve  haltonfailure="true" />
 
