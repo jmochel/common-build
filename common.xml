@@ -825,7 +825,7 @@
 		(non-shared) usage. i.e. typically within the same build.
 	 -->
 
-    <target name="Stage" depends="Pkg" description="Publish artifacts to the local repository">
+    <target name="Stage" depends="GetDependencies" description="Publish artifacts to the local repository">
 
 		<echo message="							============================================="/>
 		<echo message="                         ${ant.project.name} Stage "/>
@@ -836,7 +836,7 @@
         <ivy:publish resolver="local" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
  	</target>
 
-    <target name="Share" depends="Stage" description="Publish artifacts with ivy">
+    <target name="Share" depends="GetDependencies" description="Publish artifacts with ivy">
 
 		<echo message="							============================================="/>
 		<echo message="                         ${ant.project.name} Share "/>
