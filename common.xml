@@ -221,20 +221,21 @@
 
 	<dirname property = "commonbuild.root.dir" file = "${ant.file.commonbuild}"/>
 
+<!--	
 	<property environment="env"></property> 
 	<property name="env.HOME" value="${env.USERPROFILE}"/>
-	
 	<echo message="Pulling the common build repository location from ${env.HOME}/common-build.repository.properties" /> 
 	<property file="${env.HOME}/common-build.repository.properties" />
+-->
 	
 	<!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
-	<property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"></property>
+	<!-- <property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"/> -->
 	
 	<property name="ivy.install.version" value="2.2.0" /> 
 	<property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
 	<property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
 
-	<property name="testng.install.version" value="5.14.6" /> 
+	<property name="testng.install.version" value="6.3.1" /> 
 	<property name="testng.install.jar.dir" value="${commonbuild.root.dir}/target/lib" /> 
 	<property name="testng.install.jar.file" value="${testng.install.jar.dir}/testng-${testng.install.version}.jar" />
 	
@@ -263,13 +264,13 @@
 	<target name="DownloadTestNG" unless="testng.installed"> 
 	   	<mkdir dir="${testng.install.jar.dir}"/>
 		<echo message="Downloading TestNG Tasks..."/> 
-    	<get src="${common-build.enterprise.repository}/service/local/repositories/central/content/org/testng/testng/5.14.6/testng-5.14.6.jar" dest="${testng.install.jar.dir}/testng-5.14.6.jar" usetimestamp="true"/>		
+    	<get src="http://repo1.maven.org/maven2/org/testng/testng/${testng.install.version}/testng-${testng.install.version}.jar" dest="${testng.install.jar.file}" usetimestamp="true"/>		
 	</target> 
 
 	<target name="DownloadOneJar" unless="onejar.installed"> 
 	   	<mkdir dir="${onejar.install.jar.dir}"/>
-		<echo message="Downloading One Jar Tasks..."/> 
-    	<get src="${common-build.enterprise.repository}/service/local/repositories/releases/content/one-jar/one-jar-ant-task/0.97/one-jar-ant-task-0.97.jar" dest="${onejar.install.jar.file}" usetimestamp="true"/>		
+			<echo message="Downloading One Jar Tasks..."/> 
+    	<get src="http://sourceforge.net/projects/one-jar/files/one-jar/one-jar-${onejar.install.version}/one-jar-ant-task-${onejar.install.version}.jar/download" dest="${onejar.install.jar.file}" usetimestamp="true"/>		
 	</target> 
 	
     <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar" description="--> install common ant tasks"> 
@@ -551,10 +552,17 @@
 		<echo message="							============================================="/>
 		<echo message=" "/>
 
+		<!-- Define the properies needed for sharing artifacts -->
+		
+		<property name="artifactrepo.address" value="artifactrepo"/>
+		<property name="artifactrepo.realm" value="Sonatype Nexus Repository Manager"/>
+		<property name="artifactrepo.username" value="admin" />
+		<property name="artifactrepo.passwd" value="admin123"/>
+		
     	<ivy:settings file="${commonbuild.root.dir}/ivy-settings.xml">
-    		<ivy:credentials host="192.168.168.7"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
-				<ivy:credentials host="artifactrepo"	realm="Sonatype Nexus Repository Manager" username="admin" passwd="admin123"/>
+				<ivy:credentials host="${artifactrepo.address}"	realm="${artifactrepo.realm}" username="${artifactrepo.username}" passwd="${artifactrepo.passwd}"/>
 		</ivy:settings>
+
 
 		<ivy:resolve  haltonfailure="true" />
 
@@ -825,7 +833,7 @@
 		(non-shared) usage. i.e. typically within the same build.
 	 -->
 
-    <target name="Stage" depends="Pkg" description="Publish artifacts to the local repository">
+    <target name="Stage" depends="GetDependencies" description="Publish artifacts to the local repository">
 
 		<echo message="							============================================="/>
 		<echo message="                         ${ant.project.name} Stage "/>
@@ -836,7 +844,7 @@
         <ivy:publish resolver="local" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
  	</target>
 
-    <target name="Share" depends="Stage" description="Publish artifacts with ivy">
+    <target name="Share" depends="GetDependencies" description="Publish artifacts with ivy">
 
 		<echo message="							============================================="/>
 		<echo message="                         ${ant.project.name} Share "/>
