@@ -1,3 +1,4 @@
+
 <!--
  *
  *    Copyright (c) 2005, 2006, 2007, 2008, 2009, 2010 jmochel
@@ -680,14 +681,10 @@
 
         <copy todir="${comp.target.main.classes.dir}">
             <fileset dir="${comp.src.main.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
+                <exclude name="**/*.java"/>
             </fileset>
             <fileset dir="${comp.gen.src.main.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
+								<exclude name="**/*.java"/>
             </fileset>
         </copy>
 
@@ -701,9 +698,7 @@
 
         <copy todir="${comp.target.main.classes.dir}">
             <fileset dir="${comp.src.test.java.dir}">
-                <include name="**/*.properties"/>
-                <include name="**/*.page"/>
-                <include name="**/*.txt"/>
+								<exclude name="**/*.java"/>
             </fileset>
         </copy>
 
