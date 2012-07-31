@@ -13,7 +13,8 @@
 	<settings defaultResolver="nexus" />
 
 	<credentials host="devart.timetradesystems.com" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
-
+	<credentials host="artifactrepo" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
+	
 	<resolvers>
 		<ibiblio name="nexus" m2compatible="true" root="${artifactrepo.retrieve.url}" />
 		<ibiblio name="release" m2compatible="true" root="${artifactrepo.publish.url}" />
