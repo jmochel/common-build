@@ -860,7 +860,7 @@
         <echo message=" "/>
 
         <ivy:deliver pubrevision="${component.version}"/>
-        <ivy:publish resolver="enterprise-releases" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
+        <ivy:publish resolver="release" pubrevision="${component.version}" overwrite="true" conf="core,test"/>
     </target>
 
 
