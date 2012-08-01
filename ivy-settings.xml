@@ -3,18 +3,16 @@
 	<!-- If no other configuration has taken effect, use the defaults. These 
 		defaults assume that you have a machine named artifactrepo with nexus on 
 		it -->
-		
-	<property name="artifactrepo.retrieve.url" value="https://devart.timetradesystems.com/nexus/content/groups/public"
-		override="false" />
 
-	<property name="artifactrepo.publish.url" value="https://devart.timetradesystems.com/nexus/content/repositories/releases"
-		override="false" />
+	<property name="artifactrepo.host" value="artifactrepo" override="false" />
+	<property name="artifactrepo.protocol" value="http" override="false" />
+	<property name="artifactrepo.retrieve.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/groups/public" override="false" />
+	<property name="artifactrepo.publish.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/repositories/releases" override="false" />
 
 	<settings defaultResolver="nexus" />
 
-	<credentials host="devart.timetradesystems.com" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
-	<credentials host="artifactrepo" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
-	
+	<credentials host="${artifactrepo.host}" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
+		
 	<resolvers>
 		<ibiblio name="nexus" m2compatible="true" root="${artifactrepo.retrieve.url}" />
 		<ibiblio name="release" m2compatible="true" root="${artifactrepo.publish.url}" />
