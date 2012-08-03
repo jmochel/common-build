@@ -9,13 +9,27 @@
 	<property name="artifactrepo.retrieve.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/groups/public" override="false" />
 	<property name="artifactrepo.publish.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/repositories/releases" override="false" />
 
-	<settings defaultResolver="nexus" />
+	<settings defaultResolver="public" />
 
 	<credentials host="${artifactrepo.host}" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
 		
 	<resolvers>
-		<ibiblio name="nexus" m2compatible="true" root="${artifactrepo.retrieve.url}" />
-		<ibiblio name="release" m2compatible="true" root="${artifactrepo.publish.url}" />
+		
+		<url name="public" m2compatible="true" >
+			<ivy pattern="${artifactrepo.retrieve.url}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+  		<artifact pattern="${artifactrepo.retrieve.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+		</url>
+
+		<url name="release" m2compatible="true">
+				<ivy pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
+  			<artifact pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+		</url>
+		
 	</resolvers>
 	
 </ivysettings>
+
+
+
+
+
