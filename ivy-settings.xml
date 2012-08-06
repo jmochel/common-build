@@ -9,21 +9,33 @@
 	<property name="artifactrepo.retrieve.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/groups/public" override="false" />
 	<property name="artifactrepo.publish.url" value="${artifactrepo.protocol}://${artifactrepo.host}/nexus/content/repositories/releases" override="false" />
 
-	<settings defaultResolver="public" />
+	<settings defaultResolver="all-together" />
 
 	<credentials host="${artifactrepo.host}" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
 		
 	<resolvers>
-		
-		<url name="public" m2compatible="true" >
-			<ivy pattern="${artifactrepo.retrieve.url}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
-  		<artifact pattern="${artifactrepo.retrieve.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
-		</url>
+
+		<!-- 
+			This resolver goes to the nexus public group and treated as a maven compatible repository, 
+			In other words it does not attempt to pull down IVY.XML files as descriptions of the dependency data.
+			
+			Is therefore important, that the public group never contain the snapshot or release repositories on Nexus. If they are there
+			they will attempt to pull down IVY.XML files when our published elements are found rather than  using the maven POMs  
+		-->
+			
+		<ibiblio name="public" m2compatible="true" root="${artifactrepo.retrieve.url}"/>
 
 		<url name="release" m2compatible="true">
 				<ivy pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/ivy-[revision].xml" />
-  			<artifact pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
+  				<artifact pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
 		</url>
+		
+		<chain name="all-together">
+			<resolver ref="release"/>
+			<resolver ref="public"/>
+		</chain>
+		
+
 		
 	</resolvers>
 	
