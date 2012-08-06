@@ -30,10 +30,15 @@
   				<artifact pattern="${artifactrepo.publish.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" /> 
 		</url>
 		
-		<chain name="all-together">
+		
+		<ibiblio name="s7" m2compatible="true" root="https://github.com/s7/mvnrepo/raw/master/"/>
+
+		<chain name="all-together" returnFirst="true">
 			<resolver ref="release"/>
 			<resolver ref="public"/>
+			<resolver ref="s7"/>
 		</chain>
+
 		
 
 		
