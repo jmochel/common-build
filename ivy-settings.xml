@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivysettings>
+	<!-- Local Repo Properties -->	
+	<property name="ivy.local.default.root"             value="${ivy.default.ivy.user.dir}/local" override="false"/>
+  	<property name="ivy.local.default.ivy.pattern"      value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+  	<property name="ivy.local.default.artifact.pattern" value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+
 	<!-- If no other configuration has taken effect, use the defaults. These 
 		defaults assume that you have a machine named artifactrepo with nexus on 
 		it -->
@@ -14,6 +19,11 @@
 	<credentials host="${artifactrepo.host}" realm="Sonatype Nexus Repository Manager" username="${artifactrepo.login}" passwd="${artifactrepo.passwd}" />
 		
 	<resolvers>
+
+	  	<filesystem name="local">
+    		  <ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
+      		  <artifact pattern="${ivy.local.default.root}/${ivy.local.default.artifact.pattern}" />
+    	        </filesystem>
 
 		<!-- 
 			This resolver goes to the nexus public group and treated as a maven compatible repository, 
