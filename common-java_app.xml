@@ -131,6 +131,7 @@
 				<!-- Construct main.jar from classes and source code -->
 				<fileset dir="${comp.target.main.classes.dir}" />
 				<fileset dir="${comp.src.main.java.dir}" includes="**/*.xml"/>
+				<fileset dir="${comp.src.main.conf.dir}" includes="**/*.properties"/>
 			</main>
 			<lib>
 				<fileset refid="rslvd.compile.set" />
