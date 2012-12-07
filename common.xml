@@ -31,7 +31,7 @@
  *  OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<project name="commonbuild" xmlns:ivy="antlib:org.apache.ivy.ant" default="Build">
+<project name="commonbuild" xmlns:ivy="antlib:org.apache.ivy.ant"  xmlns:eclipse="antlib:com.unicorntoast.ant.ivy.eclipse" default="Build">
 
     <!--
             #############################################
@@ -232,10 +232,14 @@
     <!-- If no other configuration has taken effect, use the defaults. These defaults assume that you have a machine named artifactrepo with nexus on it -->
     <!-- <property name="common-build.enterprise.repository" value="http://artifactrepo:8080/nexus"/> -->
 
-    <property name="ivy.install.version" value="2.2.0" />
+    <property name="ivy.install.version" value="2.3.0-rc2" />
     <property name="ivy.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
     <property name="ivy.install.jar.file" value="${ivy.install.jar.dir}/ivy-${ivy.install.version}.jar" />
 
+    <property name="ivy-tools.install.version" value="v5" />
+    <property name="ivy-tools.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
+    <property name="ivy-tools.install.jar.file" value="${ivy-tools.install.jar.dir}/ant-ivy-tools-${ivy-tools.install.version}.jar" />
+	
     <property name="testng.install.version" value="6.3.1" />
     <property name="testng.install.jar.dir" value="${commonbuild.root.dir}/target/lib" />
     <property name="testng.install.jar.file" value="${testng.install.jar.dir}/testng-${testng.install.version}.jar" />
@@ -255,6 +259,10 @@
     <condition property="ivy.installed">
         <available file="${ivy.install.jar.file}" property="ivy.installed" value="true"/>
     </condition>
+	
+    <condition property="ivy-tools.installed">
+        <available file="${ivy-tools.install.jar.file}" property="ivy-tools.installed" value="true"/>
+    </condition>
 
     <target name="DownloadIvy" unless="ivy.installed">
         <mkdir dir="${ivy.install.jar.dir}"/>
@@ -262,6 +270,12 @@
         <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.install.jar.file}" usetimestamp="true"/>
     </target>
 
+	<target name="DownloadIvyTools" unless="ivy.installed">
+        <mkdir dir="${ivy-tools.install.jar.dir}"/>
+        <echo message="Downloading Ivy Tools ..."/>
+        <get src="http://ant-ivy-tools.googlecode.com/files/ant-ivy-tools-${ivy-tools.install.version}.jar" dest="${ivy-tools.install.jar.file}" usetimestamp="true"/>
+    </target>
+	
     <target name="DownloadTestNG" unless="testng.installed">
         <mkdir dir="${testng.install.jar.dir}"/>
         <echo message="Downloading TestNG Tasks..."/>
@@ -274,15 +288,17 @@
         <get src="http://sourceforge.net/projects/one-jar/files/one-jar/one-jar-${onejar.install.version}/one-jar-ant-task-${onejar.install.version}.jar/download" dest="${onejar.install.jar.file}" usetimestamp="true"/>
     </target>
 
-    <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar" description="--> install common ant tasks">
+    <target name="InstallCommonAntTasks" depends="DownloadIvy, DownloadTestNG, DownloadOneJar, DownloadIvyTools" description="--> install common ant tasks">
         <path id="anttask.install.lib.path">
             <fileset dir="${ivy.install.jar.dir}" includes="*.jar"/>
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="anttask.install.lib.path" />
+        <taskdef resource="com/unicorntoast/ant/ivy/eclipse/antlib.xml" uri="antlib:com.unicorntoast.ant.ivy.eclipse" classpathref="anttask.install.lib.path" />
         <taskdef resource="testngtasks" classpathref="anttask.install.lib.path" />
         <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" classpathref="anttask.install.lib.path" onerror="report"/>
     </target>
 
+	
     <!--
         Generates an IVY dependency report for the project.    By default this
         report is a set of HTML files stored in the target directory
@@ -595,6 +611,23 @@
 
     </target>
 
+	<!--
+		Generates a new .classpath file for Eclipse 
+	-->
+	
+    <target name="Update" depends="GetDependencies" description="description">
+        
+       <eclipse:classpath>
+
+                <entry kind="src" path="src/main/java" output="target/classes" />
+       			<entry kind="src" path="src/test/java" output="target/test-classes" />
+                <entry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+
+       			<ivy settings="${commonbuild.root.dir}/ivy-settings.xml" input="ivy.xml" />
+
+        </eclipse:classpath>
+    	
+    </target>	
 
     <!--
         ====================================
